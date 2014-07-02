@@ -1,0 +1,46 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperQube", "HyperQube\HyperQube.csproj", "{7B29249C-8523-448F-BDB5-C5B9D3C9384B}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperQube.Library", "HyperQube.Library\HyperQube.Library.csproj", "{549A2C66-315F-4DE8-84F0-F704B80604E0}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperQube.Providers", "HyperQube.Providers\HyperQube.Providers.csproj", "{C69870FC-6716-467E-8051-3E1CC0555ED6}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperQube.Services", "HyperQube.Services\HyperQube.Services.csproj", "{239B6ECF-4BFD-4103-B253-29E2CEA28E31}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "HyperQube.CommonProviders", "HyperQube.CommonProviders\HyperQube.CommonProviders.csproj", "{5E11AC61-5E13-461E-9A24-431EFF9C6697}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{7B29249C-8523-448F-BDB5-C5B9D3C9384B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7B29249C-8523-448F-BDB5-C5B9D3C9384B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7B29249C-8523-448F-BDB5-C5B9D3C9384B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7B29249C-8523-448F-BDB5-C5B9D3C9384B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{549A2C66-315F-4DE8-84F0-F704B80604E0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{549A2C66-315F-4DE8-84F0-F704B80604E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{549A2C66-315F-4DE8-84F0-F704B80604E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{549A2C66-315F-4DE8-84F0-F704B80604E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C69870FC-6716-467E-8051-3E1CC0555ED6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C69870FC-6716-467E-8051-3E1CC0555ED6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C69870FC-6716-467E-8051-3E1CC0555ED6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C69870FC-6716-467E-8051-3E1CC0555ED6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{239B6ECF-4BFD-4103-B253-29E2CEA28E31}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{239B6ECF-4BFD-4103-B253-29E2CEA28E31}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{239B6ECF-4BFD-4103-B253-29E2CEA28E31}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{239B6ECF-4BFD-4103-B253-29E2CEA28E31}.Release|Any CPU.Build.0 = Release|Any CPU
+		{5E11AC61-5E13-461E-9A24-431EFF9C6697}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{5E11AC61-5E13-461E-9A24-431EFF9C6697}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{5E11AC61-5E13-461E-9A24-431EFF9C6697}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{5E11AC61-5E13-461E-9A24-431EFF9C6697}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		StartupItem = HyperQube\HyperQube.csproj
+	EndGlobalSection
+EndGlobal

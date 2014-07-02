@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2012/06/nuspec.xsd">
+    <metadata>
+        <id>HyperQube.Library</id>
+        <version>$version$</version>
+        <title>HyperQube.Library</title>
+        <authors>Steven Thuriot</authors>
+        <owners>Thuriot.be</owners>
+        <licenseUrl>https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/LICENSE.md</licenseUrl>
+        <projectUrl>https://github.com/steventhuriot/hyperqube</projectUrl>
+        <iconUrl>https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/Qube.png</iconUrl>
+        <requireLicenseAcceptance>true</requireLicenseAcceptance>
+        <description>An IFTTT variant built on top of PushBullet, meant to run on a local machine.</description>
+        <copyright>Steven Thuriot</copyright>
+        <language>en-US</language>
+        <frameworkAssemblies>
+            <frameworkAssembly assemblyName="System" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="Microsoft.CSharp" targetFramework=".NETFramework4.5" />
+            <frameworkAssembly assemblyName="System.ComponentModel.Composition" targetFramework=".NETFramework4.5" />
+        </frameworkAssemblies>
+    </metadata>
+</package>
