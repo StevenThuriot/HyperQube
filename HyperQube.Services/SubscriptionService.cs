@@ -128,19 +128,19 @@ namespace HyperQube.Services
 
                         disabledQubes.Add(qube);
                     }
-
-                    if (disabledQubes.Count > 0)
-                    {
-                        var fullnames = string.Join(";", disabledQubes.Select(x => x.GetType()).Select(x => x.FullName));
-                        await _configurationProvider.SetValueAsync(DisabledQubesKey, fullnames);
-                    }
-                    else
-                    {
-                        await _configurationProvider.RemoveAsync(DisabledQubesKey);
-                    }
-
-                    await _configurationProvider.SaveAsync();
                 }
+
+                if (disabledQubes.Count > 0)
+                {
+                    var fullnames = string.Join(";", disabledQubes.Select(x => x.GetType()).Select(x => x.FullName));
+                    await _configurationProvider.SetValueAsync(DisabledQubesKey, fullnames);
+                }
+                else
+                {
+                    await _configurationProvider.RemoveAsync(DisabledQubesKey);
+                }
+
+                await _configurationProvider.SaveAsync();
             }
         }
 
@@ -158,10 +158,10 @@ namespace HyperQube.Services
             else
             {
                 var interests = Enum.GetValues(typeof (Interests))
-                    .Cast<Interests>()
-                    .Where(x => x != Interests.None && x != Interests.All)
-                    .Where(x => (qubeInterests & x) == x)
-                    .Select(x => x.AsPushType());
+                                    .Cast<Interests>()
+                                    .Where(x => x != Interests.None && x != Interests.All)
+                                    .Where(x => (qubeInterests & x) == x)
+                                    .Select(x => x.AsPushType());
 
 
                 foreach (var interest in interests)
@@ -211,7 +211,7 @@ namespace HyperQube.Services
 
                 if (!pushes.Any()) return;
 
-                var filteredPushes = pushes.Where(push => push.type != null)
+                var filteredPushes = pushes.Where(push => push.type != null && push.type != "dismissal")
                                            .Reverse() //Reverse so we start with oldest push.
                                            .ToList();
 
@@ -268,6 +268,7 @@ namespace HyperQube.Services
 
             _socketSubscription = socketObserver.Where(x => x.type == "push") // New push
                                                 .Select(x => x.push) //JSON Data from the push
+                                                .Where(push => push.type != "dismissal")
                                                 .Subscribe(Observe);
 
             _tickleSubscription = socketObserver.Where(x => x.type == "tickle" && x.subtype == "push")
