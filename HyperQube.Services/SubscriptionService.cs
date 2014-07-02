@@ -73,7 +73,7 @@ namespace HyperQube.Services
                                     ? new string[0]
                                     : fullnames.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
 
-            foreach (var qube in _qubes.Where(qube => !disabledQubes.Contains(_qubes.GetType().FullName)))
+            foreach (var qube in _qubes.Where(qube => !disabledQubes.Contains(qube.GetType().FullName)))
             {
                 Subscribe(qube);
                 _enabledQubes.Add(qube);
