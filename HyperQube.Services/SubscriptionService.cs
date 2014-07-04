@@ -25,7 +25,6 @@ using System.Linq;
 using System.Net;
 using System.Reactive.Linq;
 using System.Reactive.Subjects;
-using System.Reflection;
 using HyperQube.Library.Extensions;
 using Newtonsoft.Json;
 using HyperQube.Library;
@@ -34,12 +33,13 @@ using WebSocketSharp;
 
 namespace HyperQube.Services
 {
-    [Export(typeof (ISubscriptionService))]
+    [Export(typeof(ISubscriptionService))]
     public class SubscriptionService : ISubscriptionService
     {
         const string DisabledQubesKey = "DisabledQubes";
-        const string LastTickle = "LastTickle";
+        const string LastModifiedTick = "LastModifiedTick";
 
+        private decimal _lastModified = -1;
 
         private readonly IOutputProvider _outputProvider;
         private readonly IInputProvider _inputProvider;
@@ -53,6 +53,7 @@ namespace HyperQube.Services
 
         private IDisposable _errorSubscription;
         private IDisposable _socketSubscription;
+        private IDisposable _lastModifiedSubscription;
         private IDisposable _tickleSubscription;
 
         private readonly ISubject<dynamic> _subject = new Subject<dynamic>();
@@ -71,13 +72,19 @@ namespace HyperQube.Services
             var fullnames = _configurationProvider.GetValue(DisabledQubesKey);
             var disabledQubes = string.IsNullOrWhiteSpace(fullnames)
                                     ? new string[0]
-                                    : fullnames.Split(new[] {';'}, StringSplitOptions.RemoveEmptyEntries);
+                                    : fullnames.Split(new[] { ';' }, StringSplitOptions.RemoveEmptyEntries);
 
             foreach (var qube in _qubes.Where(qube => !disabledQubes.Contains(qube.GetType().FullName)))
             {
                 Subscribe(qube);
                 _enabledQubes.Add(qube);
             }
+
+            var lastModified = _configurationProvider.GetValue(LastModifiedTick);
+            if (!decimal.TryParse(lastModified, out _lastModified))
+                _lastModified = -1;
+
+            _lastModifiedSubscription = _subject.Subscribe(SetLastModified);
         }
 
         public async void EnableOrDisableQubes()
@@ -91,7 +98,7 @@ namespace HyperQube.Services
 
                 var question = new BooleanQuestion(qube.Title, initialValue: enabled, type: QuestionType.Togglable);
 
-                mapping.Add(question.Tag, new {Qube = qube, Enabled = enabled});
+                mapping.Add(question.Tag, new { Qube = qube, Enabled = enabled });
 
                 questions.Add(question);
             }
@@ -144,11 +151,11 @@ namespace HyperQube.Services
             }
         }
 
-        
+
         public void Subscribe(IQube qube)
         {
             var subscriptions = new List<IDisposable>();
-            
+
             var qubeInterests = qube.Interests;
             if ((qubeInterests & Interests.All) == Interests.All)
             {
@@ -157,7 +164,7 @@ namespace HyperQube.Services
             }
             else
             {
-                var interests = Enum.GetValues(typeof (Interests))
+                var interests = Enum.GetValues(typeof(Interests))
                                     .Cast<Interests>()
                                     .Where(x => x != Interests.None && x != Interests.All)
                                     .Where(x => (qubeInterests & x) == x)
@@ -168,7 +175,7 @@ namespace HyperQube.Services
                 {
                     var copy = interest;
 
-                    var observable = _subject.Where(json => StringComparer.OrdinalIgnoreCase.Equals((string) json.type, copy));
+                    var observable = _subject.Where(json => StringComparer.OrdinalIgnoreCase.Equals((string)json.type, copy));
                     var subscription = observable.Subscribe(qube.Receive);
 
                     subscriptions.Add(subscription);
@@ -183,20 +190,12 @@ namespace HyperQube.Services
 
         private async void Tickle()
         {
-            var lastModified = await _configurationProvider.GetValueAsync(LastTickle);
-
             var address = @"https://api.pushbullet.com/v2/pushes";
-            
-            decimal lastModifiedAsDecimal;
-            if (string.IsNullOrWhiteSpace(lastModified))
-            {
-                lastModifiedAsDecimal = -1;
-            }
-            else
+
+            var lastModified = _lastModified;
+            if (lastModified > 0)
             {
                 address += "?modified_after=" + lastModified;
-                if (!decimal.TryParse(lastModified, out lastModifiedAsDecimal))
-                    lastModifiedAsDecimal = -1;
             }
 
             using (var client = new WebClient())
@@ -204,46 +203,45 @@ namespace HyperQube.Services
                 var apiKey = await _configurationProvider.GetAPIKeyAsync();
                 client.Headers["Authorization"] = "Bearer " + apiKey;
 
+                client.UseDefaultCredentials = true;
+                client.Proxy = WebRequest.DefaultWebProxy;
+
                 var jsonString = await client.DownloadStringTaskAsync(address);
-                
+
                 var json = JsonConvert.DeserializeObject<dynamic>(jsonString);
                 IEnumerable<dynamic> pushes = json.pushes;
 
                 if (!pushes.Any()) return;
 
-                var filteredPushes = pushes.Where(push => push.type != null && push.type != "dismissal")
-                                           .Reverse() //Reverse so we start with oldest push.
-                                           .ToList();
+                var filteredPushes = pushes.Where(push => push.type != null)
+                                           .Where(push => push.active != false)
+                                           .Where(push => push.type != "dismissal")
+                                           .Reverse(); //Reverse so we start with oldest push.
 
-                for (var i = 0; i < filteredPushes.Count; i++)
-                {
-                    var push = filteredPushes[i];
-                    
-                    Observe((object) push);
-
-                    if (i + 1 != filteredPushes.Count) continue;
-
-                    var modified = push.modified; //Last modified push
-                    if (modified == null) continue;
-
-                    string modifiedAsString = modified.ToString();
-                    decimal modifiedAsDecimal;
-                    if (decimal.TryParse(modifiedAsString, out modifiedAsDecimal) && modifiedAsDecimal > lastModifiedAsDecimal)
-                    {
-                        lastModifiedAsDecimal = modifiedAsDecimal;
-                    }
-                }
+                foreach (object push in filteredPushes)
+                    Observe(push);
             }
-
-            if (lastModifiedAsDecimal == -1) return;
-            
-            await _configurationProvider.SetValueAsync(LastTickle, lastModifiedAsDecimal.ToString(CultureInfo.InvariantCulture));
-            await _configurationProvider.SaveAsync();
         }
 
         private void Observe(object push)
         {
             _subject.OnNext(push);
+        }
+        
+        private void SetLastModified(dynamic push)
+        {
+            var tick = push.modified ?? push.created;
+
+            if (tick == null) return;
+
+            string tickString = tick.ToString();
+            decimal tickDecimal;
+
+            if (!decimal.TryParse(tickString, out tickDecimal) || tickDecimal <= _lastModified) return;
+
+            _lastModified = tickDecimal;
+            _configurationProvider.SetValue(LastModifiedTick, _lastModified.ToString("0.0000000", CultureInfo.InvariantCulture));
+            _configurationProvider.Save();
         }
 
         public void Dispose()
@@ -268,6 +266,8 @@ namespace HyperQube.Services
 
             _socketSubscription = socketObserver.Where(x => x.type == "push") // New push
                                                 .Select(x => x.push) //JSON Data from the push
+                                                .Where(push => push.type != null)
+                                                .Where(push => push.active != false)
                                                 .Where(push => push.type != "dismissal")
                                                 .Subscribe(Observe);
 
@@ -292,10 +292,10 @@ namespace HyperQube.Services
 
             if (disposing)
             {
-                if (_errorSubscription != null)
+                if (_lastModifiedSubscription != null)
                 {
-                    _errorSubscription.Dispose();
-                    _errorSubscription = null;
+                    _lastModifiedSubscription.Dispose();
+                    _lastModifiedSubscription = null;
                 }
 
                 if (_socketSubscription != null)
@@ -308,6 +308,12 @@ namespace HyperQube.Services
                 {
                     _tickleSubscription.Dispose();
                     _tickleSubscription = null;
+                }
+
+                if (_errorSubscription != null)
+                {
+                    _errorSubscription.Dispose();
+                    _errorSubscription = null;
                 }
 
                 foreach (var subscription in _subscriptions.Values.SelectMany(x => x))
