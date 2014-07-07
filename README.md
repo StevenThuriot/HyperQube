@@ -1,18 +1,22 @@
 #HyperQube
-##What?
+
+<img  align="left" height="90" src="Qube.png" />
+
 An IFTTT variant built on top of PushBullet, created for the desktop.
-##How?
+
 HyperQube connects to pushbullet's websocket using the API key provided in your account settings. It filters out the messages the plugins are interested in using [Reactive Extensions](https://github.com/Reactive-Extensions).
 
 #Building plugins
 A sample project has been set up [here](https://github.com/steventhuriot/hyperqube-plugins).
 
 First, create a new project. All you need to start is a reference to `HyperQube.Library`. To make life easy, a nuget package is available!
+
 ```powershell
 Install-Package HyperQube.Library
 ```
 
 Building a plugin is as simple as implementing an interface. 
+
 ```csharp
 public interface IQube
 {
@@ -77,11 +81,13 @@ In it's default state, using the `Write` method of the output provider will show
 The input provider can be used to ask the user about some variables in your plugin. In the sample project, this is used to ask the user about their XBMC set up and what exactly they want the plugin to do.
 
 The user can be asked about these things by using Questions. A question is a class implementing `IQuestion`. A few default [scenario's](https://github.com/StevenThuriot/HyperQube/tree/master/HyperQube.Library/Questions) have been implemented already.
+
 * CheckBox / Toggle ([BooleanQuestion](https://github.com/StevenThuriot/HyperQube/blob/master/HyperQube.Library/Questions/BooleanQuestion.cs))
 * ComboBox ([SelectableQuestion](https://github.com/StevenThuriot/HyperQube/blob/master/HyperQube.Library/Questions/SelectableQuestion.cs))
 * TextBox / PasswordBox ([TextQuestion](https://github.com/StevenThuriot/HyperQube/blob/master/HyperQube.Library/Questions/TextQuestion.cs))
 
 A question can have two types of validation.
+
 * Required field (semi-automatic by setting a simple boolean)
 * Aditional validation by implementing `IValidatableQuestion`
   * This interface has a property that supplies a list of `IValidation` instances.
@@ -96,6 +102,7 @@ A question can have two types of validation.
 
 In most cases, you'll want to trigger the input through the tray icon.
 You can add menu's to the tray icon for your plugin by implementing `IQubeMenuItem`.
+
 ```csharp
 public interface IQubeMenuItem
 {
@@ -105,6 +112,7 @@ public interface IQubeMenuItem
 ```
 
 If you only have one menu item, the title will actually be the name of your plugin. The `MenuTitle` is a fallback when your plugin has submenu's. You can give your plugin submenus by implementing `IQubeMenuItemWithSubMenus`, which inherits from `IQubeMenuItem`.
+
 ```csharp
 public interface IQubeMenuItemWithSubMenus : IQubeMenuItem
 {
