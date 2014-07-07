@@ -18,6 +18,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.ComponentModel.Composition;
 using System.Configuration;
 using System.Linq;
@@ -57,9 +58,9 @@ namespace HyperQube.CommonProviders
             return element == null ? null : element.Value;
         }
 
-        public IEnumerable<string> GetValues(params string[] keys)
+        public IDictionary<string, string> GetValues(params string[] keys)
         {
-            return keys.Select(GetValue).ToList().AsReadOnly();
+            return new ReadOnlyDictionary<string, string>(keys.ToDictionary(x => x, GetValue));
         }
 
         public void SetValue(string key, string value)

@@ -1,10 +1,11 @@
-#HyperQube
+# ![HyperQube](https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/SquaredDisplay.png)
 
-<img  align="left" height="90" src="Qube.png" />
+HyperQube is(/started as) an IFTTT variant, built on top of PushBullet, created for the desktop.
 
-An IFTTT variant built on top of PushBullet, created for the desktop.
+It connects to PushBullet's websocket using the API key provided in your account settings. It filters out the messages the plugins are interested in using [Reactive Extensions](https://github.com/Reactive-Extensions).
 
-HyperQube connects to pushbullet's websocket using the API key provided in your account settings. It filters out the messages the plugins are interested in using [Reactive Extensions](https://github.com/Reactive-Extensions).
+Deep down, everything is built completely modular so each part is easy to replace by another component (loaded by MEF). (e.g. input can easily be replaced by another UI, in WPF, WinForms, ...)
+By default, everything is built with an eye on maximum compatibility. ( .NET / Mono )
 
 #Building plugins
 A sample project has been set up [here](https://github.com/steventhuriot/hyperqube-plugins).
@@ -24,7 +25,7 @@ public interface IQube
 
   Interests Interests { get; } //Things you are interested in. This is a flags enum.
 
-  void Receive(dynamic json); //The method that triggers each time a push message is received.
+  void Receive(dynamic json); //Triggers each time a push message is received.
 }
 ```
 

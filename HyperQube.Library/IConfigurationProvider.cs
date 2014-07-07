@@ -28,7 +28,7 @@ namespace HyperQube.Library
         void SetAPIKey(string value);
 
         string GetValue(string key);
-        IEnumerable<string> GetValues(params string[] keys);
+        IDictionary<string, string> GetValues(params string[] keys);
         void SetValue(string key, string value);
         void SetValues(IDictionary<string, string> kvps);
         SecureString GetSecureValue(string key);
@@ -38,7 +38,7 @@ namespace HyperQube.Library
         void Save();
 
         Task<string> GetValueAsync(string key);
-        Task<IEnumerable<string>> GetValuesAsync(params string[] keys);
+        Task<IDictionary<string, string>> GetValuesAsync(params string[] keys);
         Task SetValueAsync(string key, string value);
         Task SetValuesAsync(IDictionary<string, string> kvps);
         Task<SecureString> GetSecureValueAsync(string key);

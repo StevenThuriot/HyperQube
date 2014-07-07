@@ -17,6 +17,7 @@
 #endregion
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using System.Threading.Tasks;
 
@@ -29,7 +30,7 @@ namespace HyperQube.CommonProviders
             return Task.Run(() => GetValue(key));
         }
 
-        public Task<IEnumerable<string>> GetValuesAsync(params string[] keys)
+        public Task<IDictionary<string, string>> GetValuesAsync(params string[] keys)
         {
             return Task.Run(() => GetValues(keys));
         }
