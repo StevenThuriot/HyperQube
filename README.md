@@ -1,4 +1,6 @@
-# ![HyperQube](https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/SquaredDisplay.png)
+# ![HyperQube](https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/SquaredDisplay.png) 
+
+[![Build status](https://ci.appveyor.com/api/projects/status/f9sy6bfpfc6dnoyu)](https://ci.appveyor.com/project/StevenThuriot/hyperqube)
 
 HyperQube is(/started as) an IFTTT variant, built on top of PushBullet, created for the desktop.
 
