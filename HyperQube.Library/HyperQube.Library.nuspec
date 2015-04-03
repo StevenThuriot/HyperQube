@@ -10,7 +10,7 @@
         <projectUrl>https://github.com/steventhuriot/hyperqube</projectUrl>
         <iconUrl>https://raw.githubusercontent.com/StevenThuriot/HyperQube/master/Qube.png</iconUrl>
         <requireLicenseAcceptance>true</requireLicenseAcceptance>
-        <description>An IFTTT variant built on top of PushBullet, meant to run on a local machine.</description>
+        <description>An IFTTT variant built on top of PushBullet, created for the desktop.</description>
         <copyright>Steven Thuriot</copyright>
         <language>en-US</language>
         <frameworkAssemblies>
